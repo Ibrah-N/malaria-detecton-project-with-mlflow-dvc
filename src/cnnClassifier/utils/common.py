@@ -5,7 +5,7 @@ import json
 import joblib
 from ensure import ensure_annotations
 from box import ConfigBox
-from pathlib import pathlib
+from pathlib import Path
 from typing import Any
 import base64
 
@@ -49,7 +49,11 @@ def read_yaml(path_to_yaml: Path) -> ConfigBox:
 @ensure_annotations
 def create_directories(path_to_dirs: list, verbose=True):
 
-    """
+    """create list of directories
+
+    @params : 
+        path_to_dirs(list) : list of path of directories
+        ignore_log (bool, optional) : ignore if multiple dirs is to be created
     """
 
     for dir in path_to_dirs:
@@ -57,6 +61,117 @@ def create_directories(path_to_dirs: list, verbose=True):
 
         if verbose:
             logger.info(f"create directory at : {dir}")
+
+
+
+
+@ensure_annotations
+def save_json(path:Path, data:dict):
+    """ save the json data into file
+
+
+    @params:
+        path (Path): path where the data should be stored
+        data (dict): the data to be stored
+    """
+    with open(path, 'w') as json_file:
+        json.dump(data, json_file, indent=4)
+    
+    logger.info(f"json file saved at {path}")
+
+
+
+
+@ensure_annotations
+def load_json(path : Path) -> ConfigBox :
+    """ load the json file data
+
+    @params:
+        path (Path) : path to json file
+
+
+    Returns:
+        json data as class of ConfigBox
+    """
+    with open(path, 'r') as json_file:
+        content = json.load(json_file)
+
+    logger.info(f"json file loaded successfully from : {path}")
+
+    return ConfigBox(content)
+
+
+
+
+@ensure_annotations
+def save_bin(path : Path, data : Any):
+    """ Save the data in binary file
+
+    @params:
+        path : the path to binary file
+        data : the data that to be save in binary file
+    """
+    joblib.dump(filename=path, value=data)
+    logger.info(f"binary file saved successfully at : {path}")
+
+
+
+
+@ensure_annotations
+def load_bin(path : Path) -> Any:
+    """ load the binary file content
+
+    @params:
+        path : path to binary file
+    
+    Return : 
+        Any : the data of binary file
+    """
+    data = joblib.load(path)
+    logger.info(f"data loaded successfully from : {path}")
+
+    return data
+
+
+
+
+
+@ensure_annotations
+def get_size(path : Path) -> str:
+    """get the size of the file
+
+    @params:
+        path : path to the file
+    
+    Return : 
+        str : the size of the file in kb
+    """
+    size_in_kb = round(os.path.getsize(path)/1024)
+
+    return f"~{size_in_kb} KB"
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
