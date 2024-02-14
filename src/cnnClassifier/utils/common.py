@@ -8,17 +8,13 @@ from box import ConfigBox
 from pathlib import Path
 from typing import Any
 import base64
-
-
-
+from pathlib import Path
+import yaml
 
 
 @ensure_annotations
-def read_yaml(path_to_yaml: Path) -> ConfigBox:
-
-    """
-    read yaml file and returns the configBox
-
+def read_yaml(path_to_yaml : Path) -> ConfigBox:
+    """read yaml file and returns the configBox
 
     Args:
         path_to_yaml(str): the yaml file path to be read
@@ -26,17 +22,14 @@ def read_yaml(path_to_yaml: Path) -> ConfigBox:
     Exception : e
         empty yaml file
 
-
     return:
         The config yaml file
     """
-
-
     try:
-        with open(path_to_yaml) as yaml_file:
-            content = yaml.safe_load(yaml_file)
+        with open(path_to_yaml) as f:
+            con = yaml.safe_load(f)
             logger.info(f"yaml file {path_to_yaml} loaded successfully")
-            return ConfigBox
+            return ConfigBox(con)
     except BoxValueError:
         raise ValueError("yaml file is empty")
 
@@ -57,7 +50,7 @@ def create_directories(path_to_dirs: list, verbose=True):
     """
 
     for dir in path_to_dirs:
-        os.mkdirs(dir, exist_ok=True)
+        os.makedirs(dir, exist_ok=True)
 
         if verbose:
             logger.info(f"create directory at : {dir}")
@@ -153,7 +146,31 @@ def get_size(path : Path) -> str:
 
 
 
+def decode_image(img_string, file_name):
+    img_data = base64.b64decode(img_string)
     
+    with open(file_name, 'wb') as f:
+        f.write(img_data)
+        f.close()
+
+
+
+
+
+def encode_image(croppped_img_path):
+    with open(croppped_img_path, 'rb') as f:
+        return base64.b64encode(f.read())
+
+
+
+
+
+
+
+
+
+
+
 
 
 
